@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="s3box" Language="1041" Version="0.1.0.0"
+			 Manufacturer="Ryan Work" UpgradeCode="b5083f22-a9a1-4082-8cd3-cd6037925657" Codepage="932">
+		<Package Description="aws s3 backend storage" Comments="s3box" InstallerVersion="200" Compressed="yes"
+				 InstallScope="perMachine" SummaryCodepage="932" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+		<Icon Id="icon.ico" SourceFile="s3box.ico" />
+		<Property Id="ARPPRODUCTICON" Value="icon.ico" />
+
+		<Feature Id="ProductFeature" Title="s3box" Level="1">
+			<ComponentGroupRef Id="OverlayComponents" />
+			<ComponentGroupRef Id="OverlayX86Components" />
+			<ComponentGroupRef Id="OverlayX64Components" />
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+
+		<CustomAction Id="RunBatch" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]install.bat" 
+					  Return="check" Execute="deferred" Impersonate='no' />
+		<CustomAction Id="Uninstall" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]uninstall.bat"
+					  Return="asyncNoWait" Execute="deferred" Impersonate='no' />
+		<InstallExecuteSequence>
+			<Custom Action="RunBatch" After="InstallFiles">NOT Installed</Custom>
+		    <Custom Action="Uninstall" After="InstallInitialize">REMOVE="ALL"</Custom>
+		</InstallExecuteSequence>
+
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="s3box">
+					<Directory Id="SUBFOLDERx86" Name="x86"></Directory>
+					<Directory Id="SUBFOLDERx64" Name="x64"></Directory>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+        <ComponentGroup Id="OverlayComponents" Directory="INSTALLFOLDER">
+            <Component Id="ProductComponent001" Guid="c6c63760-7350-4211-926a-d646965e4c9e" >
+                <File Id="OverlayFile001" Source="..\s3-box-overlay\bin\Release\Microsoft.Win32.Registry.dll" />
+            </Component>
+            <Component Id="ProductComponent002" Guid="3137074d-0af5-4ae0-be30-ba9b28c6bd28" >
+                <File Id="OverlayFile002" Source="..\s3-box-overlay\bin\Release\s3-box-overlay.dll" />
+            </Component>
+            <Component Id="ProductComponent003" Guid="d52ef781-c1c6-4392-a3b6-28534eb87b42" >
+                <File Id="OverlayFile003" Source="..\s3-box-overlay\bin\Release\s3-box-overlay.pdb" />
+            </Component>
+            <Component Id="ProductComponent004" Guid="c02a9086-5460-486c-bd63-4d18297eb1eb" >
+                <File Id="OverlayFile004" Source="..\s3-box-overlay\bin\Release\SharpShell.dll" />
+            </Component>
+            <Component Id="ProductComponent005" Guid="338e6365-de12-4e5f-9830-93b93020f661" >
+                <File Id="OverlayFile005" Source="..\s3-box-overlay\bin\Release\SharpShell.xml" />
+            </Component>
+            <Component Id="ProductComponent006" Guid="d2bb12f1-9947-4a38-915b-5d6a01c77ca4" >
+                <File Id="OverlayFile006" Source="..\s3-box-overlay\bin\Release\SQLitePCLRaw.core.dll" />
+            </Component>
+            <Component Id="ProductComponent007" Guid="8ec92f02-b22f-4681-968c-082fcfac31c1" >
+                <File Id="OverlayFile007" Source="..\s3-box-overlay\bin\Release\System.Buffers.dll" />
+            </Component>
+            <Component Id="ProductComponent008" Guid="5f9d467e-a4bd-4149-87fc-5193bcc6b424" >
+                <File Id="OverlayFile008" Source="..\s3-box-overlay\bin\Release\System.Buffers.xml" />
+            </Component>
+            <Component Id="ProductComponent009" Guid="8a98f6fa-fe49-4d6c-8021-dd773675c935" >
+                <File Id="OverlayFile009" Source="..\s3-box-overlay\bin\Release\System.Data.SQLite.dll" />
+            </Component>
+            <Component Id="ProductComponent010" Guid="bbf5b9b4-06ca-4b38-a4c0-5e84c513e12d" >
+                <File Id="OverlayFile010" Source="..\s3-box-overlay\bin\Release\System.Data.SQLite.xml" />
+            </Component>
+            <Component Id="ProductComponent011" Guid="7aeb4695-fc83-4bec-85ef-5f312b5efcdc" >
+                <File Id="OverlayFile011" Source="..\s3-box-overlay\bin\Release\System.Memory.dll" />
+            </Component>
+            <Component Id="ProductComponent012" Guid="e715736a-9e89-45e9-b04c-42b8251f19dd" >
+                <File Id="OverlayFile012" Source="..\s3-box-overlay\bin\Release\System.Memory.xml" />
+            </Component>
+            <Component Id="ProductComponent013" Guid="bf293a51-cee9-4c6a-bc02-4532a2377bbb" >
+                <File Id="OverlayFile013" Source="..\s3-box-overlay\bin\Release\System.Numerics.Vectors.dll" />
+            </Component>
+            <Component Id="ProductComponent014" Guid="7c14597a-7bfc-4408-a756-41577fcb3ca3" >
+                <File Id="OverlayFile014" Source="..\s3-box-overlay\bin\Release\System.Numerics.Vectors.xml" />
+            </Component>
+            <Component Id="ProductComponent015" Guid="ba719c78-e4d1-4045-af74-f909f4ab99fe" >
+                <File Id="OverlayFile015" Source="..\s3-box-overlay\bin\Release\System.Runtime.CompilerServices.Unsafe.dll" />
+            </Component>
+            <Component Id="ProductComponent016" Guid="33c5c05c-88f8-405a-8662-bb3de28e83c0" >
+                <File Id="OverlayFile016" Source="..\s3-box-overlay\bin\Release\System.Runtime.CompilerServices.Unsafe.xml" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="OverlayX86Components" Directory="SUBFOLDERx86">
+            <Component Id="ProductComponent018" Guid="1237b340-49d3-48fd-9634-0c93bca6f11f" >
+                <File Id="OverlayFile018" Source="..\s3-box-overlay\bin\Release\x86\SQLite.Interop.dll" />
+            </Component>
+        </ComponentGroup>
+        <ComponentGroup Id="OverlayX64Components" Directory="SUBFOLDERx64">
+            <Component Id="ProductComponent017" Guid="553188a2-7021-42d6-8d6b-d56a3dae92fb" >
+                <File Id="OverlayFile017" Source="..\s3-box-overlay\bin\Release\x64\SQLite.Interop.dll" />
+            </Component>
+        </ComponentGroup>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ProductComponent1">
+				<File Source="..\s3-box\dist\s3box\s3box.exe" />
+			</Component>
+			<Component Id="ProductComponent2" >
+				<File Source="install.bat" />
+			</Component>
+			<Component Id="ProductComponent3" >
+				<File Source="uninstall.bat" />
+			</Component>
+			<Component Id="RegistryEntries" Guid="529305ce-e010-41d6-86de-e288add76189">
+				<RegistryKey Root="HKCU"
+							 Key="Software\RyanWork\s3box"
+					  Action="createAndRemoveOnUninstall">
+					<RegistryValue Type="string" Value="[INSTALLFOLDER]"/>
+				</RegistryKey>
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+
+</Wix>
