@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi" xmlns:util="http://schemas.microsoft.com/wix/UtilExtension">
 	<Product Id="*" Name="s3box" Language="1041" Version="0.1.0.0"
 			 Manufacturer="Ryan Work" UpgradeCode="b5083f22-a9a1-4082-8cd3-cd6037925657" Codepage="932">
 		<Package Description="aws s3 backend storage" Comments="s3box" InstallerVersion="200" Compressed="yes"
@@ -15,15 +15,18 @@
 			<ComponentGroupRef Id="OverlayX86Components" />
 			<ComponentGroupRef Id="OverlayX64Components" />
 			<ComponentGroupRef Id="ProductComponents" />
+			<ComponentGroupRef Id="ProductComponentLogs" />
+			<ComponentGroupRef Id="ProductComponentAssets" />
+			<ComponentRef Id="ApplicationShortcut" />
 		</Feature>
 
 		<CustomAction Id="RunBatch" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]install.bat" 
 					  Return="check" Execute="deferred" Impersonate='no' />
 		<CustomAction Id="Uninstall" Directory="INSTALLFOLDER" ExeCommand="[INSTALLFOLDER]uninstall.bat"
-					  Return="asyncNoWait" Execute="deferred" Impersonate='no' />
+					  Return="check" Execute="deferred" Impersonate='no' />
 		<InstallExecuteSequence>
 			<Custom Action="RunBatch" After="InstallFiles">NOT Installed</Custom>
-		    <Custom Action="Uninstall" After="InstallInitialize">REMOVE="ALL"</Custom>
+		    <Custom Action="Uninstall" After="InstallInitialize">(NOT UPGRADINGPRODUCTCODE) AND (REMOVE="ALL")</Custom>
 		</InstallExecuteSequence>
 
 	</Product>
@@ -34,7 +37,12 @@
 				<Directory Id="INSTALLFOLDER" Name="s3box">
 					<Directory Id="SUBFOLDERx86" Name="x86"></Directory>
 					<Directory Id="SUBFOLDERx64" Name="x64"></Directory>
+					<Directory Id="SUBFOLDER_LOG" Name="log"></Directory>
+					<Directory Id="SUBFOLDER_ASSETS" Name="assets"></Directory>
 				</Directory>
+			</Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="ApplicationProgramsFolder" Name="s3box"/>
 			</Directory>
 		</Directory>
 	</Fragment>
@@ -102,12 +110,15 @@
         </ComponentGroup>
 		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
 			<Component Id="ProductComponent1">
-				<File Source="..\s3-box\dist\s3box\s3box.exe" />
+				<File Id="ExeId" Source="..\s3-box\dist\s3box\s3box.exe" />
 			</Component>
-			<Component Id="ProductComponent2" >
-				<File Source="install.bat" />
+			<Component Id="ProductComponent2">
+				<File Source="..\s3-box\config.ini" />
 			</Component>
 			<Component Id="ProductComponent3" >
+				<File Source="install.bat" />
+			</Component>
+			<Component Id="ProductComponent4" >
 				<File Source="uninstall.bat" />
 			</Component>
 			<Component Id="RegistryEntries" Guid="529305ce-e010-41d6-86de-e288add76189">
@@ -118,6 +129,31 @@
 				</RegistryKey>
 			</Component>
 		</ComponentGroup>
+		<ComponentGroup Id="ProductComponentLogs" Directory="SUBFOLDER_LOG">
+			<Component Id="ProductComponentLog1" Guid="d506e3a8-5dba-4305-9802-d441e1b63d29">
+				<CreateFolder Directory="SUBFOLDER_LOG">
+					<util:PermissionEx User="Users" GenericAll="yes"/>
+				</CreateFolder>
+			</Component>
+		</ComponentGroup>
+		<ComponentGroup Id="ProductComponentAssets" Directory="SUBFOLDER_ASSETS">
+			<Component Id="ProductComponentAsset1" Guid="826aec57-2c7f-4b7c-b0c6-3ac01a36660b">
+				<CreateFolder Directory="SUBFOLDER_ASSETS">
+					<util:PermissionEx User="Users" GenericAll="yes"/>
+				</CreateFolder>
+			</Component>
+		</ComponentGroup>
+		<DirectoryRef Id="ApplicationProgramsFolder">
+			<Component Id="ApplicationShortcut" Guid="8b50ada6-f570-40af-b910-1c652c5b53cf">
+				<Shortcut Id="ApplicationStartMenuShortcut"
+						  Name="s3box"
+						  Description="s3box"
+						  Target="[#ExeId]"
+						  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+				<RegistryValue Root="HKCU" Key="Software\RyanWork\s3box" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+			</Component>
+		</DirectoryRef>
 	</Fragment>
 
 </Wix>
