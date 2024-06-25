@@ -149,7 +149,7 @@
 						  Name="s3box"
 						  Description="s3box"
 						  Target="[#ExeId]"
-						  WorkingDirectory="APPLICATIONROOTDIRECTORY"/>
+						  WorkingDirectory="INSTALLFOLDER"/>
 				<RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
 				<RegistryValue Root="HKCU" Key="Software\RyanWork\s3box" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
 			</Component>
